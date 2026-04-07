@@ -1,0 +1,21 @@
+# secrets — never commit
+.env
+
+# virtual environment
+.venv/
+
+# python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# build artifacts
+*.egg-info/
+dist/
+build/
+
+# test / tool caches
+.pytest_cache/
+
+# local lock file (HF Space builds fresh from pyproject.toml)
+uv.lock
