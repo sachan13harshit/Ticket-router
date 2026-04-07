@@ -1,8 +1,8 @@
-# Customer Support Ticket Router — Dockerfile
-# Standalone build using python:3.10-slim (no openenv-base dependency)
-# Build context: ticket_router/ directory
+# Customer Support Ticket Router
+# Uses Meta's openenv-base image (ghcr.io) — avoids Docker Hub network issues
 
-FROM python:3.10-slim AS builder
+ARG BASE_IMAGE=ghcr.io/meta-pytorch/openenv-base:latest
+FROM ${BASE_IMAGE} AS builder
 
 WORKDIR /app
 
@@ -10,35 +10,30 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends git curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Install dependencies first for better layer caching
-COPY server/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
-# Copy full environment source
 COPY . /app/env
 
-# ── Runtime stage ─────────────────────────────────────────────────────────────
-FROM python:3.10-slim
+WORKDIR /app/env
+
+# Ensure uv is available
+RUN if ! command -v uv >/dev/null 2>&1; then \
+        curl -LsSf https://astral.sh/uv/install.sh | sh && \
+        mv /root/.local/bin/uv /usr/local/bin/uv; \
+    fi
+
+# Install dependencies using frozen lockfile
+RUN uv sync --frozen --no-editable
+
+# ── Runtime stage ──────────────────────────────────────────────────────────────
+FROM ${BASE_IMAGE}
 
 WORKDIR /app
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy installed packages from builder
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /app/env/.venv /app/.venv
 COPY --from=builder /app/env /app/env
 
-# Python path so `from ticket_router import ...` works inside container
+ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app/env:$PYTHONPATH"
-
-# Enable OpenEnv web interface (Gradio UI)
 ENV ENABLE_WEB_INTERFACE=true
-
-# Pass-through env vars (override at runtime: -e HF_TOKEN=... -e MODEL_NAME=...)
-ENV HF_TOKEN=""
 ENV API_BASE_URL="https://router.huggingface.co/v1"
 ENV MODEL_NAME="Qwen/Qwen2.5-72B-Instruct"
 
