@@ -164,19 +164,19 @@ class TestMeanScore:
             for s in BENCHMARK_SEEDS
         ]
         mean = sum(scores) / len(scores)
-        assert mean == 1.0, f"Expected mean=1.0 with perfect actions, got {mean:.4f}"
+        assert round(mean, 4) == 0.99, f"Expected mean=0.99 with perfect actions, got {mean:.4f}"
 
     def test_easy_mean_perfect(self):
         scores = [self._run_scenario("easy", s) for s in BENCHMARK_SEEDS]
-        assert sum(scores) / len(scores) == 1.0
+        assert round(sum(scores) / len(scores), 4) == 0.99
 
     def test_medium_mean_perfect(self):
         scores = [self._run_scenario("medium", s) for s in BENCHMARK_SEEDS]
-        assert sum(scores) / len(scores) == 1.0
+        assert round(sum(scores) / len(scores), 4) == 0.99
 
     def test_hard_mean_perfect(self):
         scores = [self._run_scenario("hard", s) for s in BENCHMARK_SEEDS]
-        assert sum(scores) / len(scores) == 1.0
+        assert round(sum(scores) / len(scores), 4) == 0.99
 
     def test_wrong_team_reduces_mean_below_1(self):
         """Always routing to Product (wrong) must reduce mean below 1.0."""

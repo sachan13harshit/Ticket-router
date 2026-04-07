@@ -190,31 +190,31 @@ class TestPerfectScore:
         return result.metadata["score"]
 
     def test_perfect_score_easy_seed0(self):
-        assert self._perfect_score("easy", 0) == 1.0
+        assert self._perfect_score("easy", 0) == 0.99
 
     def test_perfect_score_easy_seed1(self):
-        assert self._perfect_score("easy", 1) == 1.0
+        assert self._perfect_score("easy", 1) == 0.99
 
     def test_perfect_score_easy_seed2(self):
-        assert self._perfect_score("easy", 2) == 1.0
+        assert self._perfect_score("easy", 2) == 0.99
 
     def test_perfect_score_medium_seed0(self):
-        assert self._perfect_score("medium", 0) == 1.0
+        assert self._perfect_score("medium", 0) == 0.99
 
     def test_perfect_score_medium_seed1(self):
-        assert self._perfect_score("medium", 1) == 1.0
+        assert self._perfect_score("medium", 1) == 0.99
 
     def test_perfect_score_medium_seed2(self):
-        assert self._perfect_score("medium", 2) == 1.0
+        assert self._perfect_score("medium", 2) == 0.99
 
     def test_perfect_score_hard_seed0(self):
-        assert self._perfect_score("hard", 0) == 1.0
+        assert self._perfect_score("hard", 0) == 0.99
 
     def test_perfect_score_hard_seed1(self):
-        assert self._perfect_score("hard", 1) == 1.0
+        assert self._perfect_score("hard", 1) == 0.99
 
     def test_perfect_score_hard_seed2(self):
-        assert self._perfect_score("hard", 2) == 1.0
+        assert self._perfect_score("hard", 2) == 0.99
 
     def test_mean_score_perfect_actions(self):
         """All 9 benchmark scenarios with correct actions → mean score = 1.0."""
@@ -223,4 +223,4 @@ class TestPerfectScore:
             for seed in self.SEEDS:
                 all_scores.append(self._perfect_score(task_type, seed))
         mean = sum(all_scores) / len(all_scores)
-        assert mean == 1.0, f"Expected mean=1.0, got {mean:.4f}"
+        assert mean == 0.99, f"Expected mean=0.99, got {mean:.4f}"

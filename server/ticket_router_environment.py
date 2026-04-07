@@ -301,7 +301,8 @@ def _compute_score(action: TicketRouterAction, expected: Dict, team_status: List
         s += 0.2
     if _is_overloaded(action.primary_team, team_status) and _better_alternative_exists(action.primary_team, team_status):
         s -= 0.2
-    return round(max(0.0, min(1.0, s)), 4)
+    # Clamp strictly within (0, 1) — hackathon requires scores not equal to 0.0 or 1.0
+    return round(max(0.01, min(0.99, s)), 4)
 
 
 def _compute_reward(action: TicketRouterAction, expected: Dict, team_status: List[Dict]) -> float:

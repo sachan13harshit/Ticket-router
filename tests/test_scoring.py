@@ -27,11 +27,11 @@ def _expected(team="Billing", priority="medium", urgency="medium"):
 # ── _compute_score ────────────────────────────────────────────────────────────
 
 class TestComputeScore:
-    def test_perfect_score_is_1(self):
+    def test_perfect_score_is_0_99(self):
         score = _compute_score(_action("Billing", "high", "high"),
                                _expected("Billing", "high", "high"),
                                _BALANCED_TEAMS)
-        assert score == 1.0
+        assert score == 0.99
 
     def test_correct_team_only(self):
         # team correct (+0.6), wrong priority and urgency → 0.6 minus nothing = 0.6
@@ -64,7 +64,7 @@ class TestComputeScore:
         score = _compute_score(_action("Product", "low", "low"),
                                _expected("Billing", "high", "high"),
                                _BALANCED_TEAMS)
-        assert score == 0.0
+        assert score == 0.01
 
     def test_score_clamped_to_zero_no_negative(self):
         # wrong team (0) + overload penalty with no alternatives — edge case
@@ -107,7 +107,7 @@ class TestComputeScore:
             _expected("Billing", "medium", "medium"),
             all_overloaded,
         )
-        assert score == 1.0   # No penalty because no better alternative exists
+        assert score == 0.99   # No penalty because no better alternative exists
 
     def test_score_is_rounded_to_4_decimal_places(self):
         score = _compute_score(_action("Billing", "high", "high"),
