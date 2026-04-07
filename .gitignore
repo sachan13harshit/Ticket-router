@@ -17,5 +17,3 @@ build/
 # test / tool caches
 .pytest_cache/
 
-# local lock file (HF Space builds fresh from pyproject.toml)
-uv.lock
